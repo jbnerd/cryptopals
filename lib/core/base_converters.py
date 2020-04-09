@@ -1,5 +1,7 @@
 import string
 
+from lib.core.utils import BinaryStringOps
+
 
 class ConversionDataGenerator:
     """Generates data for base conversion logic"""
@@ -62,8 +64,8 @@ class Converter:
             raise ValueError('to_base parameter value not supported. Try one of the following:\n'
                              + str(cls._supported_base_names))
 
-    @classmethod
-    def _base16_to_binary_string(cls, base16_str):
+    @staticmethod
+    def _base16_to_binary_string(base16_str):
         """Converts a base16 string into binary string
 
         Args:
@@ -76,7 +78,7 @@ class Converter:
 
     @classmethod
     def _binary_string_to_base16(cls, binary_string):
-        """Converts a binary string into base16 strin
+        """Converts a binary string into base16 string
 
         Args:
             binary_string: (str)
@@ -84,18 +86,8 @@ class Converter:
         Returns:
             base16 encoding of input string: (str)
         """
-        chunks = cls._int_chunks(binary_string, 4)
+        chunks = BinaryStringOps.int_chunks(binary_string, 4)
         return ''.join([cls._int_to_base16[chunk] for chunk in chunks])
-
-    @staticmethod
-    def _int_chunks(binary_string, chunk_len):
-        if len(binary_string) % chunk_len == 0:
-            required_len = len(binary_string)
-        else:
-            required_len = len(binary_string) + chunk_len - (len(binary_string) % chunk_len)
-        binary_string = binary_string.zfill(required_len)
-        chunks = [binary_string[i: i + chunk_len] for i in range(0, len(binary_string), chunk_len)]
-        return [int(chunk, 2) for chunk in chunks]
 
     @classmethod
     def _base64_to_binary_string(cls, base64_str):
@@ -119,5 +111,5 @@ class Converter:
         Returns:
             base64 encoding of input string: (str)
         """
-        chunks = cls._int_chunks(binary_string, 6)
+        chunks = BinaryStringOps.int_chunks(binary_string, 6)
         return ''.join([cls._int_to_base64[chunk] for chunk in chunks])
