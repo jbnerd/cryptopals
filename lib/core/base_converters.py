@@ -1,6 +1,6 @@
 import string
 
-from lib.core.utils import BinaryStringOps
+from lib.core.utils import StringUtils
 
 
 class ConversionDataGenerator:
@@ -86,7 +86,7 @@ class Converter:
         Returns:
             base16 encoding of input string: (str)
         """
-        chunks = BinaryStringOps.int_chunks(binary_string, 4)
+        chunks = StringUtils.binary_int_chunks(binary_string, 4)
         return ''.join([cls._int_to_base16[chunk] for chunk in chunks])
 
     @classmethod
@@ -111,5 +111,5 @@ class Converter:
         Returns:
             base64 encoding of input string: (str)
         """
-        chunks = BinaryStringOps.int_chunks(binary_string, 6)
+        chunks = StringUtils.binary_int_chunks(binary_string, 6)
         return ''.join([cls._int_to_base64[chunk] for chunk in chunks])

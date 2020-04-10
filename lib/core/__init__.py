@@ -1,2 +1,2 @@
 from lib.core.base_converters import Converter
-from lib.core.utils import BinaryStringOps
+from lib.core.utils import StringUtils
