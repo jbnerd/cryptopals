@@ -19,6 +19,13 @@ class BinaryStringOps:
         xor_bits = [bin(i)[2:].zfill(8) for i in xor]
         return ''.join(xor_bits)
 
+    @staticmethod
+    def single_byte_xor(binary_string, int8):
+        """Performs bitwise xor on binary string with int8 and a window of 8 bits"""
+        byte_chunks = StringUtils.binary_int_chunks(binary_string, 8)
+        xor_chunks = [bin(chunk ^ int8)[2:].zfill(8) for chunk in byte_chunks]
+        return ''.join(xor_chunks)
+
 
 class HexStringOps:
     """Operations on hex encoded strings"""
