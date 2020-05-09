@@ -28,4 +28,4 @@ class SingleByteEnglishXor:
             if temp_sum > max_sum:
                 max_sum = temp_sum
                 max_deciphered_string = ''.join([chr(chunk) for chunk in deciphered_string_int_chunks])
-        return max_deciphered_string
+        return max_deciphered_string, max_sum
