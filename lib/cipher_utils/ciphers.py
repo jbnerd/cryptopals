@@ -48,3 +48,24 @@ class SingleByteXorEnglish(BaseCipher):
                 best_score = score
                 best_deciphered_string = ''.join([chr(chunk) for chunk in xored_bit_string_chunks])
         return best_deciphered_string, best_score
+
+
+class RepeatingKeyXor(BaseCipher):
+    """Single byte xor cipher with repeating keys
+
+        The keys are repeated by sampling a character from a string in a round-robin fashion
+    """
+
+    def encrypt(self, data_string, key_string):
+        data_bit_string = StringUtils.string_to_bit_string(data_string)
+        key_bit_string = StringUtils.string_to_bit_string(key_string)
+
+        repeat_mul = int(len(data_bit_string) / len(key_bit_string)) + 1
+        key_bit_string = key_bit_string * repeat_mul
+        key_bit_string = key_bit_string[:len(data_bit_string)]
+
+        resultant_string = BinaryStringOps.bitwise_xor(data_bit_string, key_bit_string)
+        return resultant_string
+
+    def decrypt(self, *args):
+        pass
