@@ -1,4 +1,4 @@
-from lib.cipher_utils.deciphers import SingleByteEnglishXor
+from lib.cipher_utils.ciphers import SingleByteXorEnglish
 from lib.core.base_converters import Converter
 
 
@@ -10,12 +10,12 @@ def read_file():
 
 
 def main():
-    decipherer = SingleByteEnglishXor()
+    decipherer = SingleByteXorEnglish()
     lines = read_file()
     max_score, best_deciphered_string = 0, None
     for line in lines:
         binary_string = Converter.convert(line, '16', '2')
-        deciphered_string, score = decipherer.decode(binary_string)
+        deciphered_string, score = decipherer.decrypt(binary_string)
         if score > max_score:
             max_score = score
             best_deciphered_string = deciphered_string
