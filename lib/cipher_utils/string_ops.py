@@ -26,6 +26,13 @@ class BinaryStringOps:
         xor_chunks = [bin(chunk ^ int8)[2:].zfill(8) for chunk in byte_chunks]
         return ''.join(xor_chunks)
 
+    @staticmethod
+    def hamming_distance(s1, s2):
+        """Returns the Hamming distance between equal-length sequences."""
+        if len(s1) != len(s2):
+            raise ValueError("Undefined for sequences of unequal length.")
+        return sum(el1 != el2 for el1, el2 in zip(s1, s2))
+
 
 class HexStringOps:
     """Operations on hex encoded strings"""
