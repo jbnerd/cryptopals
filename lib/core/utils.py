@@ -2,19 +2,19 @@ class StringUtils:
     """Operations on binary encoded strings"""
 
     @classmethod
-    def binary_int_chunks(cls, binary_string, chunk_len, pad='left'):
-        chunks = cls.make_chunks(binary_string, chunk_len, pad)
+    def binary_int_chunks(cls, binary_string, chunk_len, pad='left', custom_char='0'):
+        chunks = cls.make_chunks(binary_string, chunk_len, pad, custom_char)
         return [int(chunk, 2) for chunk in chunks]
 
     @classmethod
-    def make_chunks(cls, string, chunk_len, pad='left'):
+    def make_chunks(cls, string, chunk_len, pad='left', custom_char='0'):
         if pad not in ['left', 'right']:
             raise ValueError('padding can either be "left" or "right"')
 
         if pad == 'left':
-            string = cls.lfill_required_len(string, chunk_len)
+            string = cls.lfill_required_len(string, chunk_len, custom_char)
         else:
-            string = cls.rfill_required_len(string, chunk_len)
+            string = cls.rfill_required_len(string, chunk_len, custom_char)
         return [string[i: i + chunk_len] for i in range(0, len(string), chunk_len)]
 
     @classmethod
@@ -32,8 +32,8 @@ class StringUtils:
         return required_len
 
     @staticmethod
-    def lfill(string, num_char, custom_char='0'):
-        return custom_char * num_char + string
+    def lfill(string, num_chars, custom_char='0'):
+        return num_chars * custom_char + string
 
     @classmethod
     def rfill_required_len(cls, string, chunk_len, custom_char='0'):
@@ -43,7 +43,7 @@ class StringUtils:
 
     @staticmethod
     def rfill(string, num_chars, custom_char='0'):
-        return string + custom_char * num_chars
+        return string + num_chars * custom_char
 
     @staticmethod
     def string_to_bit_string(string):

@@ -86,7 +86,7 @@ class Converter:
         Returns:
             base16 encoding of input string: (str)
         """
-        chunks = StringUtils.binary_int_chunks(binary_string, 4)
+        chunks = StringUtils.binary_int_chunks(binary_string, chunk_len=4, pad='left')
         return ''.join([cls._int_to_base16[chunk] for chunk in chunks])
 
     @classmethod
