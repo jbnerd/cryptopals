@@ -74,7 +74,7 @@ class Converter:
         Returns:
             binary encoding of input string: (str)
         """
-        return bin(int(base16_str, 16))[2:]
+        return bin(int(base16_str, 16))[2:].lstrip('0')
 
     @classmethod
     def _binary_string_to_base16(cls, binary_string):
@@ -89,6 +89,10 @@ class Converter:
         chunks = StringUtils.binary_int_chunks(binary_string, chunk_len=4, pad='left')
         return ''.join([cls._int_to_base16[chunk] for chunk in chunks])
 
+    @staticmethod
+    def _count_base64_padding_chars(base64_str):
+        return len(base64_str) - len(base64_str.rstrip('='))
+
     @classmethod
     def _base64_to_binary_string(cls, base64_str):
         """Converts a base64 string into binary string
@@ -99,7 +103,18 @@ class Converter:
         Returns:
             binary encoding of input string: (str)
         """
-        return ''.join([bin(cls._base64_to_int[letter])[2:].zfill(6) for letter in base64_str])
+        num_padding_chars = cls._count_base64_padding_chars(base64_str)
+        base64_str = base64_str.rstrip('=')
+        bit_string = ''.join([bin(cls._base64_to_int[letter])[2:].zfill(6) for letter in base64_str])
+        if num_padding_chars == 0:
+            pass
+        elif num_padding_chars == 1:
+            bit_string = bit_string[:-2]
+        elif num_padding_chars == 2:
+            bit_string = bit_string[:-4]
+        else:
+            raise ValueError('Encountered absurd number of padding characters')
+        return bit_string.lstrip('0')
 
     @classmethod
     def _binary_string_to_base64(cls, binary_string):
@@ -111,5 +126,6 @@ class Converter:
         Returns:
             base64 encoding of input string: (str)
         """
-        chunks = StringUtils.binary_int_chunks(binary_string, 6)
-        return ''.join([cls._int_to_base64[chunk] for chunk in chunks])
+        chunks = StringUtils.binary_int_chunks(binary_string, 6, pad='right')
+        base_64_str = ''.join([cls._int_to_base64[chunk] for chunk in chunks])
+        return StringUtils.rfill_required_len(base_64_str, 4, custom_char='=')

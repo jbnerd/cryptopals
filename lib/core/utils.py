@@ -18,8 +18,8 @@ class StringUtils:
         return [string[i: i + chunk_len] for i in range(0, len(string), chunk_len)]
 
     @classmethod
-    def lfill_required_len(cls, string, chunk_len, custom_char='0'):
-        required_len = cls._required_divisible_len(len(string), chunk_len)
+    def lfill_required_len(cls, string, divisor, custom_char='0'):
+        required_len = cls._required_divisible_len(len(string), divisor)
         num_chars = required_len - len(string)
         return cls.lfill(string, num_chars, custom_char)
 
@@ -36,8 +36,8 @@ class StringUtils:
         return num_chars * custom_char + string
 
     @classmethod
-    def rfill_required_len(cls, string, chunk_len, custom_char='0'):
-        required_len = cls._required_divisible_len(len(string), chunk_len)
+    def rfill_required_len(cls, string, divisor, custom_char='0'):
+        required_len = cls._required_divisible_len(len(string), divisor)
         num_chars = required_len - len(string)
         return cls.rfill(string, num_chars, custom_char)
 
