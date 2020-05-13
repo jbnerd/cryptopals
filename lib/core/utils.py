@@ -8,12 +8,12 @@ class StringUtils:
 
     @classmethod
     def make_chunks(cls, string, chunk_len, pad='left', custom_char='0'):
-        if pad not in ['left', 'right']:
-            raise ValueError('padding can either be "left" or "right"')
+        if pad not in ['left', 'right', 'none']:
+            raise ValueError('padding can either be "left", "right" or "none"')
 
         if pad == 'left':
             string = cls.lfill_required_len(string, chunk_len, custom_char)
-        else:
+        elif pad == 'right':
             string = cls.rfill_required_len(string, chunk_len, custom_char)
         return [string[i: i + chunk_len] for i in range(0, len(string), chunk_len)]
 

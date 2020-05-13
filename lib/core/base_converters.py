@@ -74,7 +74,8 @@ class Converter:
         Returns:
             binary encoding of input string: (str)
         """
-        return bin(int(base16_str, 16))[2:].lstrip('0')
+        binary_string = bin(int(base16_str, 16))[2:]
+        return StringUtils.lfill_required_len(binary_string, 8)
 
     @classmethod
     def _binary_string_to_base16(cls, binary_string):

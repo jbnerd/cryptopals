@@ -70,4 +70,61 @@ class RepeatingKeyXor(BaseCipher):
         return resultant_string
 
     def decrypt(self, data):
-        pass
+        candidate_key_lengths = self._choose_candidate_key_lengths(data)
+        best_key, best_score = "", 0
+        for candidate_key_len in candidate_key_lengths:
+            key, score = self._find_key(data, candidate_key_len)
+            if score > best_score:
+                best_key = key
+                best_score = score
+        return best_key
+
+    def _choose_candidate_key_lengths(self, data, max_key_len=41, num_candidates=3):
+        candidates = []
+        for i in range(2, max_key_len):
+            chunks = StringUtils.make_chunks(data, i * 8)
+            mean_score = self._mean_xor_score(chunks)
+            candidates.append((i, mean_score))
+        candidates = sorted(candidates, key=lambda x: x[1])
+        candidates = [candidate[0] for candidate in candidates]
+        return candidates[:num_candidates]
+
+    def _mean_xor_score(self, chunks):
+        scores = []
+        while True:
+            try:
+                scores.append(self._normalized_xor_score(chunks[0], chunks[1]))
+                del chunks[0]
+                del chunks[1]
+            except:
+                break
+        return sum(scores) / len(scores)
+
+    @staticmethod
+    def _normalized_xor_score(chunk1, chunk2):
+        score = BinaryStringOps.hamming_distance(chunk1, chunk2)
+        return float(score) / len(chunk1)
+
+    def _find_key(self, data, key_len):
+        transposed_blocks = self._transposed_blocks(data, key_len)
+        key, score = "", 0
+        single_byte_xor_cipher = SingleByteXorEnglish()
+        for block in transposed_blocks:
+            _, block_score, block_key = single_byte_xor_cipher.decrypt(block)
+            key += block_key
+            score += block_score
+        return key, score
+
+    @staticmethod
+    def _transposed_blocks(data, key_len):
+        chunks = StringUtils.make_chunks(data, 8)
+        blocks = [chunks[i: i + key_len] for i in range(0, len(chunks), key_len)]
+        transposed_blocks = []
+        for i in range(key_len):
+            transposed_block = []
+            for block in blocks:
+                if i < len(block):
+                    transposed_block.append(block[i])
+            transposed_blocks.append(transposed_block)
+        transposed_blocks = [''.join(block) for block in transposed_blocks]
+        return transposed_blocks
