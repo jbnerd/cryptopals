@@ -1,5 +1,6 @@
-import yaml
 from abc import abstractmethod
+
+import yaml
 
 from lib.cipher_utils.string_ops import BinaryStringOps
 from lib.core.utils import StringUtils
@@ -39,7 +40,7 @@ class SingleByteXorEnglish(BaseCipher):
         return BinaryStringOps.single_byte_xor(bit_string, int8)
 
     def decrypt(self, bit_string):
-        best_score, best_deciphered_string = 0, ""
+        best_score, best_deciphered_string, best_key = 0, "", -1
         for int8 in range(256):
             xored_bit_string = BinaryStringOps.single_byte_xor(bit_string, int8)
             xored_bit_string_chunks = StringUtils.binary_int_chunks(xored_bit_string, 8)
@@ -47,7 +48,8 @@ class SingleByteXorEnglish(BaseCipher):
             if score > best_score:
                 best_score = score
                 best_deciphered_string = ''.join([chr(chunk) for chunk in xored_bit_string_chunks])
-        return best_deciphered_string, best_score
+                best_key = chr(int8)
+        return best_deciphered_string, best_score, best_key
 
 
 class RepeatingKeyXor(BaseCipher):
@@ -67,5 +69,5 @@ class RepeatingKeyXor(BaseCipher):
         resultant_string = BinaryStringOps.bitwise_xor(data_bit_string, key_bit_string)
         return resultant_string
 
-    def decrypt(self, *args):
+    def decrypt(self, data):
         pass
